@@ -1,0 +1,24 @@
+{
+  "name": "To-Do-List",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Soukayna El Ferchouni <soukaynafr2019@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://example.com/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.8.3",
+    "bootstrap": "^5.3.2"
+  },
+  "install": {
+    "path":"client/libs"
+  }
+}
