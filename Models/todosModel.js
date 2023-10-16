@@ -4,6 +4,9 @@ const Schema = mongoose.Schema;
 const todoSchema = new Schema({
   text: String,
   completed: Boolean,
+  isEditMode: boolean,
+  _id: any
+
 });
 
 

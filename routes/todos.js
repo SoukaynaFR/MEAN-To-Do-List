@@ -2,8 +2,7 @@ var express = require('express');
 var router = express.Router();
 const mongoose = require("mongoose");
 
-db = 'mongodb://127.0.0.1:27017/todos';
-
+dbURI = 'mongodb://127.0.0.1:27017/todos';
 
 const todoSchema = new mongoose.Schema({
   text: String,
@@ -12,7 +11,7 @@ const todoSchema = new mongoose.Schema({
 
 const TodoModel = mongoose.model('tasks', todoSchema);
 
-mongoose.connect(db, {
+mongoose.connect(dbURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -23,48 +22,49 @@ mongoose.connect(db, {
     console.error("Error connecting to MongoDB:", error);
   });
 
-
 // Get tasks
 router.get('/getTasks', (req, res, next) => {
   TodoModel.find({}).then(function (tasks) {
-    res.json(tasks)
+    res.json(tasks);
   }).catch(function (err) {
     console.log(err);
   });
 });
-
-
-
 
 // Get task by ID
 router.get('/getTasks/:id', (req, res, next) => {
   TodoModel.findOne({
     _id: req.params.id
   }).then(function (task) {
-    res.json(task)
+    res.json(task);
   }).catch(function (err) {
     console.log(err);
   });
 });
 
-
 // Save task
 router.post('/task', function (req, res, next) {
   var task = req.body;
-  if (!task.text || !(task.completed + '')) {
+  if (!task.text || typeof task.completed !== 'boolean') {
     res.status(400);
     res.json({
       "error": "invalid data"
-    })
-  } else
-    db.save(task, function (err, result) {
-      if (err) {
-        res.send(err);
-      } else {
+    });
+  } else {
+    const newTask = new TodoModel({
+      text: task.text,
+      completed: task.completed,
+    });
+    newTask.save()
+      .then(result => {
         res.json(result);
-      }
-    })
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      });
+  }
 });
+
 
 // update task
 router.put('/task/:id', function (req, res, next) {
@@ -83,51 +83,31 @@ router.put('/task/:id', function (req, res, next) {
     res.status(400);
     res.json({
       "error": "invalid data"
-
-    })
+    });
   } else {
-    db.todos.update({
-      _id: req.params.id
-    }, upObj, {}, function (err, result) {
-      if (err) {
-        res.send(err);
-      } else {
+    TodoModel.updateOne({
+        _id: req.params.id
+      }, upObj)
+      .then(result => {
         res.json(result);
-      }
-    }
-    )
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      });
   }
+});
 
+// delete task
+router.delete('/task/:id', function (req, res, next) {
+  TodoModel.deleteOne({ _id: req.params.id })
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
 });
 
 
 
-// delete task
-
-router.delete('/task/:id', function (req, res, next) {
-
-
-  db.todos.remove({
-    _id: req.params.id
-  }, '', function (err, result) {
-    if (err) {
-      res.send(err);
-    } else {
-      res.json(result);
-    }
-  }
-  )
-}
-
-);
-
-
 module.exports = router;
-
-
-
-
-
-
-
-
