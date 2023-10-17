@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const path = require("path"); 
+const path = require("path");
 
 
 var index = require("./routes/index");
@@ -11,15 +11,12 @@ const { renderFile } = require("ejs");
 
 var app = express();
 
-// view engine
-// app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-// app.engine('html', require('ejs').renderFile); // Example usage with the EJS view engine
-app.engine('html', renderFile); // Use the renderFile function directly
+app.engine('html', renderFile);
 
 
 
-app.set('views', path.resolve(__dirname ,'client' , 'views'));
+app.set('views', path.resolve(__dirname, 'client', 'views'));
 
 app.use(express.static(path.resolve(__dirname, 'client')));
 

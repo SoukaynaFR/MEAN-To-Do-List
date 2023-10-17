@@ -86,8 +86,8 @@ router.put('/task/:id', function (req, res, next) {
     });
   } else {
     TodoModel.updateOne({
-        _id: req.params.id
-      }, upObj)
+      _id: req.params.id
+    }, upObj)
       .then(result => {
         res.json(result);
       })
